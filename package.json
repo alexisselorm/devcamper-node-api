@@ -5,6 +5,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
+    "morgan": "^1.10.0",
     "nodemon": "^3.1.4"
   },
   "name": "devcamper-node-api",
