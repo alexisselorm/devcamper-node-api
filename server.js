@@ -43,5 +43,6 @@ process.on("unhandledRejection",(err,promiise)=>{
   //Close server and exit immediately
   server.close(()=>{
     process.exit(1);
+    
   });
 }) 
