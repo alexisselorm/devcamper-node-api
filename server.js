@@ -9,7 +9,11 @@ const bootcamps = require('./routes/bootcamps');
 
 dotenv.config({path:'./config.env'});
 
+const connectDB = require('./config/db');
 const app = express();
+
+//connect to database
+connectDB();
 
 //Dev logging middeware
 if (process.env.NODE_ENV=='development') {
@@ -28,6 +32,16 @@ app.get('/', (req,res)=>{
 
 PORT = process.env.PORT || 5000;
 
-app.listen(PORT,()=>{
+const server = app.listen(PORT,()=>{
   console.log(`Server running on ${process.env.NODE_ENV} listening on localhost:${PORT}`);
 });
+
+//Handle unhandled promise rejections
+process.on("unhandledRejection",(err,promiise)=>{
+  console.log(`Error: ${err.message}`);
+  
+  //Close server and exit immediately
+  server.close(()=>{
+    process.exit(1);
+  });
+}) 
