@@ -1,4 +1,5 @@
-const Bootcamp = require('../models/bootcamp.model')
+const Bootcamp = require('../models/bootcamp.model');
+const ErrorResponse = require('../utils/errorHandler');
 
 // @desc Get all bootcamps
 //@route GET /api/v1/bootcamps
@@ -27,7 +28,7 @@ exports.getBootcamp = async (req, res, next) => {
 
     res.status(200).json({ success: true, msg: "Show bootcamp", data: bootcamp });
   } catch (error) {
-    next(error);
+    next(new ErrorResponse(`Error response: ${error.message}`,'500'));
     // res.status(500).json({ success: false, msg: ` ${error.message}`, data: [] });
 
   }
