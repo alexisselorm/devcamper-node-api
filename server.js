@@ -2,7 +2,7 @@ const express= require('express');
 const dotenv = require('dotenv');
 const colors = require('colors');
 const morgan = require('morgan');
-
+const errorHandler = require('./middleware/global-error.middleware');
 //Routes
 const bootcamps = require('./routes/bootcamps');
 
@@ -35,6 +35,7 @@ app.get('/', (req,res)=>{
 
 PORT = process.env.PORT || 5000;
 
+app.use(errorHandler)
 const server = app.listen(PORT,()=>{
   console.log(`Server running on ${process.env.NODE_ENV} listening on localhost:${PORT}`.yellow.bold);
 });

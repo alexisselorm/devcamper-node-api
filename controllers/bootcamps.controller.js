@@ -27,7 +27,8 @@ exports.getBootcamp = async (req, res, next) => {
 
     res.status(200).json({ success: true, msg: "Show bootcamp", data: bootcamp });
   } catch (error) {
-    res.status(500).json({ success: false, msg: ` ${error.message}`, data: [] });
+    next(error);
+    // res.status(500).json({ success: false, msg: ` ${error.message}`, data: [] });
 
   }
 }
