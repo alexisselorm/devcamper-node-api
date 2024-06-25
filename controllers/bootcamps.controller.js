@@ -8,10 +8,9 @@ exports.getBootcamps = async (req, res, next) => {
   try {
     const bootcamps = await Bootcamp.find();
 
-    res.status(200).json({ success: true, msg: "Show all bootcamps",count:bootcamps.length ,  data: bootcamps });
+    res.status(200).json({ success: true, msg: "Show all bootcamps", count: bootcamps.length, data: bootcamps });
   } catch (error) {
-    res.status(500).json({ success: false, msg: ` ${error.message}`, data: [] });
-
+    next(error);
   }
 }
 
@@ -28,7 +27,8 @@ exports.getBootcamp = async (req, res, next) => {
 
     res.status(200).json({ success: true, msg: "Show bootcamp", data: bootcamp });
   } catch (error) {
-    next(new ErrorResponse(`Error response: ${error.message}`,'500'));
+    next(error);
+
     // res.status(500).json({ success: false, msg: ` ${error.message}`, data: [] });
 
   }
@@ -43,7 +43,7 @@ exports.createBootcamp = async (req, res, next) => {
     const bootcamp = await Bootcamp.create(req.body);
     res.status(201).json({ success: true, msg: `Successfully created bootcamp`, data: bootcamp });
   } catch (error) {
-    res.status(400).json({ success: false, msg: `Bad request ${error.message}`, data: [] });
+    next(error);
 
   }
 
@@ -66,7 +66,8 @@ exports.updateBootcamp = async (req, res, next) => {
     res.status(200).json({ success: true, msg: `Bootcamp deleted successfully`, data: {} });
   } catch (error) {
 
-    res.status(400).json({ success: true, msg: error.message, data: [] });
+    next(error);
+
   }
 
 }
@@ -74,6 +75,7 @@ exports.updateBootcamp = async (req, res, next) => {
 // @desc Get single bootcamp
 //@route PUT /api/v1/bootcamps/:id
 //@access Prive
+
 exports.deleteBootcamp = async (req, res, next) => {
   try {
     const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
@@ -84,6 +86,7 @@ exports.deleteBootcamp = async (req, res, next) => {
     res.status(200).json({ success: true, msg: `Bootcamp update`, data: bootcamp });
   } catch (error) {
 
-    res.status(400).json({ success: true, msg: error.message, data: [] });
+    next(error);
+
   }
 }
