@@ -1,6 +1,7 @@
 const Bootcamp = require('../models/bootcamp.model');
 const ErrorResponse = require('../utils/errorHandler');
 const asyncHandler = require('../middleware/asyncHandler.middleware');
+const geocoder = require('../utils/geocoder');
 // @desc Get all bootcamps
 //@route GET /api/v1/bootcamps
 //@access Public
@@ -26,7 +27,7 @@ exports.getBootcamp = asyncHandler(async (req, res, next) => {
 })
 
 
-// @desc Get single bootcamp
+// @desc Create a bootcamp
 //@route POST /api/v1/bootcamps
 //@access Prive
 exports.createBootcamp = asyncHandler(async (req, res, next) => {
@@ -37,7 +38,7 @@ exports.createBootcamp = asyncHandler(async (req, res, next) => {
 })
 
 
-// @desc Get single bootcamp
+// @desc Update single bootcamp
 //@route PUT /api/v1/bootcamps/:id
 //@access Prive
 exports.updateBootcamp =asyncHandler( async (req, res, next) => {
@@ -55,10 +56,9 @@ exports.updateBootcamp =asyncHandler( async (req, res, next) => {
 
 })
 
-// @desc Get single bootcamp
+// @desc Delete bootcamp
 //@route PUT /api/v1/bootcamps/:id
 //@access Prive
-
 exports.deleteBootcamp =asyncHandler( async (req, res, next) => {
  
     const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
@@ -68,4 +68,34 @@ exports.deleteBootcamp =asyncHandler( async (req, res, next) => {
     }
     res.status(200).json({ success: true, msg: `Bootcamp update`, data: bootcamp });
  
+})
+
+// @desc Get  bootcamps with a radius
+//@route PUT /api/v1/bootcamps/:zipcode/:distance
+//@access Prive
+exports.getBootcampsInRadius =asyncHandler( async (req, res, next) => {
+ 
+  const {zipcode, distance} = req.params;
+
+  //Get lon and lat
+  
+  const loc = await geocoder.geocode(zipcode);
+  const lat = await loc[0].latitude;
+  const lon = await loc[0].longitude;
+
+  //Calc radius usin radians
+  //Divide distance by radius of earth
+  //Earth radius = 3963 miles / 6378km
+  let radiusOfEarth = 3963
+  const radius = distance / radiusOfEarth
+  
+  const bootcamps = await Bootcamp.find({
+    location: {$geoWithin:{$cenerSphere:[[lon,lat],radius]}}
+  })
+
+  if (!bootcamps) {
+    return res.status(400).json({ success: false, msg: `Bad request`, data: [] });
+  }
+  res.status(200).json({ success: true, msg: `Bootcamp update`, data: bootcamps });
+
 })

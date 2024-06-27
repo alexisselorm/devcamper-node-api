@@ -31,13 +31,14 @@ const deleteData = async()=>{
   } catch (error) {
     console.log(error);
   }
+  process.exit(0);
 }
 
 if (process.argv[2]=='-i') {
   importData();
 }
 else if (process.argv[2]=='-d') {
-  deleteData()
+  deleteData();
 }else{
   console.log("Invalid argument".yellow.italic.inverse);
   process.exit(0);
