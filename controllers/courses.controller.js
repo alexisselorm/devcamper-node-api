@@ -50,3 +50,40 @@ exports.createCourse = asyncHandler(async(req,res,next)=>{
   res.status(200).json({success:true,count:course.length,data:course})
 })
 
+
+//@desc Update course
+//@route [PUT] /api/v1/courses/:id
+//@access private
+exports.updateCourse = asyncHandler(async(req,res,next)=>{
+  
+  const course = await Course.findById(req.params.id)
+
+  
+  if (!course) {
+    return next(new ErrorResponse(`No course found with the id ${req.params.id}`))
+  }
+
+  course = await Course.findByIdAndUpdate(req.params.id,req.body,{
+    new:true,
+    runValidators:true
+  });
+  res.status(200).json({success:true,data:course})
+})
+
+
+//@desc Update course
+//@route [PUT] /api/v1/courses/:id
+//@access private
+exports.deleteCourse = asyncHandler(async(req,res,next)=>{
+  
+  const course = await Course.findById(req.params.id)
+
+  
+  if (!course) {
+    return next(new ErrorResponse(`No course found with the id ${req.params.id}`))
+  }
+
+  await Course.deleteOne();
+  res.status(200).json({success:true,data:{}})
+})
+
