@@ -2,8 +2,11 @@ const express= require('express');
 const dotenv = require('dotenv');
 const colors = require('colors');
 const morgan = require('morgan');
+const fileupload = require('express-fileupload');
 const errorHandler = require('./middleware/global-error.middleware');
+const path = require('node:path');
 dotenv.config({path:'./config.env'});
+
 //Routes
 const bootcamps = require('./routes/bootcamps');
 const courses = require('./routes/courses');
@@ -12,6 +15,9 @@ const courses = require('./routes/courses');
 
 const connectDB = require('./config/db');
 const app = express();
+app.use(fileupload());
+
+app.use(express.static(path.join(__dirname, 'public')))
 
 // Body parser
 app.use(express.json());
