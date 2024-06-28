@@ -6,6 +6,7 @@ const errorHandler = require('./middleware/global-error.middleware');
 dotenv.config({path:'./config.env'});
 //Routes
 const bootcamps = require('./routes/bootcamps');
+const courses = require('./routes/courses');
 
 
 
@@ -26,6 +27,7 @@ if (process.env.NODE_ENV=='development') {
 
 //Mount routers
 app.use('/api/v1/bootcamps', bootcamps);
+app.use('/api/v1/courses', courses);
 
 
 app.get('/', (req,res)=>{
