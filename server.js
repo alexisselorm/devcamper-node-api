@@ -4,6 +4,7 @@ const colors = require('colors');
 const morgan = require('morgan');
 const fileupload = require('express-fileupload');
 const errorHandler = require('./middleware/global-error.middleware');
+const cookieParser = require('cookie-parser');
 const path = require('node:path');
 dotenv.config({path:'./config.env'});
 
@@ -15,12 +16,12 @@ const auth = require('./routes/auth');
 
 const connectDB = require('./config/db');
 const app = express();
+app.use(express.json());
 app.use(fileupload());
-
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')))
 
 // Body parser
-app.use(express.json());
 
 //connect to database
 connectDB();
