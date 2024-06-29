@@ -10,7 +10,7 @@ dotenv.config({path:'./config.env'});
 //Routes
 const bootcamps = require('./routes/bootcamps');
 const courses = require('./routes/courses');
-
+const auth = require('./routes/auth');
 
 
 const connectDB = require('./config/db');
@@ -34,7 +34,7 @@ if (process.env.NODE_ENV=='development') {
 //Mount routers
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', courses);
-
+app.use('/api/v1/auth', auth);
 
 app.get('/', (req,res)=>{
   res.status(400).json({data:"Hello from Express"})
