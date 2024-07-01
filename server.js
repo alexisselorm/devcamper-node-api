@@ -70,6 +70,11 @@ app.use('/api/v1/reviews', reviews);
 
 PORT = process.env.PORT || 5000;
 
+
+
+app.get('/',(req,res)=>{
+  res.send('./public/index.html')
+})
 app.use(errorHandler)
 const server = app.listen(PORT,()=>{
   console.log(`Server running on ${process.env.NODE_ENV} listening on localhost:${PORT}`.yellow.bold);
