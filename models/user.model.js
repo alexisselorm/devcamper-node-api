@@ -72,7 +72,7 @@ UserSchema.methods.matchPassword =async function (password) {
 
 UserSchema.methods.getResetToken=async function () {
 //Generate the token
-const resetToken = crypto.randomBytes(20).toString('hex');
+const resetToken =  crypto.randomBytes(20).toString('hex');
 
 //Hash the token and set to  resetPasswordToken field
 this.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
