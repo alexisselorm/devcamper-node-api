@@ -54,7 +54,16 @@ exports.createBootcamp = asyncHandler(async (req, res, next) => {
 //@access Prive
 exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 
-  const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
+  
+  let bootcamp = await Bootcamp.findById(req.params.id);
+
+  //Make sure user is bootcamp owner
+  if (bootcamp.user.toString()!==req.user.id && req.user.role !== 'admin') {
+  return next(new ErrorResponse(`User ${req.user.id} is not authorized to update this bootcamp`,401))
+  }
+
+  
+   bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true
   });
@@ -72,11 +81,17 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 //@access Prive
 exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
 
-  const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+  const bootcamp = await Bootcamp.findById(req.params.id);
 
   if (!bootcamp) {
     return res.status(400).json({ success: false, msg: `Bad request`, data: [] });
   }
+
+   //Make sure user is bootcamp owner
+   if (bootcamp.user.toString()!==req.user.id && req.user.role !== 'admin') {
+    return next(new ErrorResponse(`User ${req.user.id} is not authorized to update this bootcamp`,401))
+    }
+
   console.log(bootcamp);
   await bootcamp.deleteOne();
   res.status(200).json({ success: true, msg: `Bootcamp deleted`, data: bootcamp });
