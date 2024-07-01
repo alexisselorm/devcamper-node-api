@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const fileupload = require('express-fileupload');
 const errorHandler = require('./middleware/global-error.middleware');
 const cookieParser = require('cookie-parser');
+const mongoSanitize = require('express-mongo-sanitize');
 const path = require('node:path');
 dotenv.config({path:'./config.env'});
 
@@ -19,6 +20,7 @@ const reviews = require('./routes/review');
 const connectDB = require('./config/db');
 const app = express();
 app.use(express.json());
+app.use(mongoSanitize())
 app.use(fileupload());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')))
