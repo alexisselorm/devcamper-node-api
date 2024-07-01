@@ -1,6 +1,8 @@
 const express= require('express');
 const dotenv = require('dotenv');
 const colors = require('colors');
+const helmet = require('helmet');
+const xss= require('xss-clean');
 const morgan = require('morgan');
 const fileupload = require('express-fileupload');
 const errorHandler = require('./middleware/global-error.middleware');
@@ -21,6 +23,12 @@ const connectDB = require('./config/db');
 const app = express();
 app.use(express.json());
 app.use(mongoSanitize())
+
+//Set security headers
+app.use(helmet());
+
+//Prevent XSS attacks
+app.use(xss());
 app.use(fileupload());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')))
