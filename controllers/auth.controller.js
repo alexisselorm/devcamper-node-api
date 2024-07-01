@@ -2,6 +2,9 @@ const User = require('../models/user.model');
 const ErrorResponse = require('../utils/errorHandler');
 const asyncHandler = require('../middleware/asyncHandler.middleware');
 const sendEmail = require('../utils/sendEmail')
+const crypto = require('crypto')
+
+
 
 // @desc Register user
 //@route POST /api/v1/auth/register
@@ -104,7 +107,7 @@ exports.forgotPassword = asyncHandler(async(req,res,next) => {
  
 
   //Create reset url
-  const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/resetPassword/${resetToken}`
+  const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/resetPassword/${resetToken}`
 
   const message=`You requested this password. Click here \n\n ${resetUrl}`
   try{
@@ -128,6 +131,30 @@ return res.status(200).json({success:true,data:'Email sent'})
     return next(new ErrorResponse('Email could not be sent',500))
 
   }
+});
 
+
+// @desc Reset password
+//@route PUT /api/v1/auth/resetPassword:/resettoken
+//@access Private
+exports.resetPassword = asyncHandler(async(req,res,next) => {
+  //Get hashed token
+  const resetPasswordToken=crypto.createHash('sha256').update(req.params.resettoken).digest('hex');
+
+
+  const user = await User.findOne({resetPasswordToken,resetPasswordExpire:{
+    $gt:Date.now()
+  }});
+
+  if (!user) {
+    return next(new ErrorResponse('Invalid token',400))
+  }
+  // set new password
+  user.password = req.body.password;
+  user.resetPasswordToken = undefined
+  user.resetPasswordExpire = undefined
+
+  await user.save();
+ sendTokenResponse(user,200,res);
 
 })
