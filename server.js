@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const xss= require('xss-clean');
 const rateLimit= require('express-rate-limit');
 const hpp= require('hpp');
+const cors= require('cors');
 const morgan = require('morgan');
 const fileupload = require('express-fileupload');
 const errorHandler = require('./middleware/global-error.middleware');
@@ -37,11 +38,13 @@ const limiter = rateLimit({
   windowMs:10*60*1000,// 10 minutes,
   max:15
 })
-app.use(limiter)
+app.use(limiter);
 
 //Prevent http param pollution
-app.use(hpp())
+app.use(hpp());
 
+//Enable cors
+app.use(cors());
 app.use(fileupload());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')))
@@ -53,7 +56,7 @@ connectDB();
 
 //Dev logging middeware
 if (process.env.NODE_ENV=='development') {
-  app.use(morgan('dev'))
+  app.use(morgan('dev'));
 }
 
 
