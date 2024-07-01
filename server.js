@@ -13,6 +13,7 @@ const bootcamps = require('./routes/bootcamps');
 const courses = require('./routes/courses');
 const auth = require('./routes/auth');
 const users = require('./routes/user');
+const reviews = require('./routes/review');
 
 
 const connectDB = require('./config/db');
@@ -38,10 +39,7 @@ app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', courses);
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/users', users);
-
-app.get('/', (req,res)=>{
-  res.status(400).json({data:"Hello from Express"})
-})
+app.use('/api/v1/reviews', reviews);
 
 
 PORT = process.env.PORT || 5000;

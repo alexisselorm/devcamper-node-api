@@ -8,12 +8,14 @@ dotenv.config({path:'./config.env'})
 const Bootcamp = require('./models/bootcamp.model');
 const Course = require('./models/course.model');
 const User = require('./models/user.model');
+const Review = require('./models/review.model');
 
 mongoose.connect(process.env.MONGO_URI);
 
 const bootcamps = JSON.parse(fs.readFileSync(`${__dirname}/_data/bootcamps.json`,'utf-8'))
 const courses = JSON.parse(fs.readFileSync(`${__dirname}/_data/courses.json`,'utf-8'))
 const users = JSON.parse(fs.readFileSync(`${__dirname}/_data/users.json`,'utf-8'))
+const reviews = JSON.parse(fs.readFileSync(`${__dirname}/_data/reviews.json`,'utf-8'))
 
 const importData = async()=>{
   try {
@@ -23,6 +25,8 @@ const importData = async()=>{
     await Course.create(courses);
     console.log("importing users".green.inverse);
     await User.create(users);
+    console.log("importing reviews".green.inverse);
+    await Review.create(reviews);
 
 
     console.log("Data imported".green.inverse);
@@ -35,12 +39,13 @@ const importData = async()=>{
 const deleteData = async()=>{
   try {
     console.log("deleting bootcamps".red.inverse);
-
     await Bootcamp.deleteMany();
     console.log("deleting courses".red.inverse);
     await Course.deleteMany();
     console.log("deleting users".red.inverse);
     await User.deleteMany();
+    console.log("deleting reviews".red.inverse);
+    await Review.deleteMany();
 
     console.log("Data deleted".red.inverse);
   } catch (error) {

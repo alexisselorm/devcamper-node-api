@@ -6,12 +6,14 @@ const {getBootcamps,getBootcamp,createBootcamp,updateBootcamp,deleteBootcamp, ge
 
 // Include other resource routers
 const courseRouter = require('./courses');
+const reviewRouter = require('./review');
 const advancedResults = require('../middleware/advancedResults');
 const router = express.Router();
 const {protect, authorize} = require('../middleware/auth.middleware')
 
 
 router.use('/:bootcampId/courses',courseRouter)
+router.use('/:bootcampId/reviews',reviewRouter)
 
 router.route('/')
 .get(advancedResults(Bootcamp,'courses'),getBootcamps)
