@@ -58,18 +58,38 @@ exports.addReview = asyncHandler(async(req,res,next)=>{
 })
 
 
-//@desc Add review
-//@route POST /api/v1/bootcamps/:bootcampId/reviews/
+//@desc Update review
+//@route POST /api/v1/reviews/:id
 //@access Private
 exports.updateReview = asyncHandler(async(req,res,next)=>{
+let review = await Review.findById(req.params.id);
 
-  req.body.bootcampId = req.query.bootcampId;
- req.body.user= req.user._id;
+if(!review) return next(new ErrorResponse('No review found with this ID',404));
 
- const bootcamp = await Bootcamp.findById(req.params.bootcampId);
- console.log(bootcamp);
- if(!bootcamp) return next(new ErrorResponse("Bootcamp not found",404));
- const  review = await Review.create(req.body);
+//Make sure review belongs to user or user is admin
+if(review.user.toString() !==req.user._id && req.user.role!=='admin') return next(new ErrorResponse('Not authorized to update review',401));
+
+  review = await Review.findByIdAndUpdate(req,params.id,req.body,{
+    new:true,
+    runValidators:true
+  });
  return res.status(201).json({success:true,data:review});
 
 })
+
+//@desc Delete review
+//@route POST /api/v1/reviews/:id
+//@access Private
+exports.updateReview = asyncHandler(async(req,res,next)=>{
+  let review = await Review.findById(req.params.id);
+  
+  if(!review) return next(new ErrorResponse('No review found with this ID',404));
+  
+  //Make sure review belongs to user or user is admin
+  if(review.user.toString() !==req.user._id && req.user.role!=='admin') return next(new ErrorResponse('Not authorized to update review',401));
+  
+    await review.deleteOne();
+   return res.status(201).json({success:true,data:review});
+  
+  })
+  
