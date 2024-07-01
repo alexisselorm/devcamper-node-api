@@ -1,8 +1,5 @@
 const nodemailer = require("nodemailer");
 
-
-console.log(process.env.SMTP_HOST);
-
 const sendEmail = async (options) => {
 
 
