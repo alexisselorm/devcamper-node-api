@@ -32,6 +32,16 @@ exports.getBootcamp = asyncHandler(async (req, res, next) => {
 //@route POST /api/v1/bootcamps
 //@access Prive
 exports.createBootcamp = asyncHandler(async (req, res, next) => {
+  //Add user to req.body
+  req.body.user = req.user.id;
+
+  //Check for published bootcamp
+  const publishedBootcamp = await Bootcamp.findOne({user:req.user.id});
+
+  //If user is not admin, they can only add one bootcamp
+  if (publishedBootcamp && req.user.role != 'admin') {
+    return next(new ErrorResponse(`The user with ID ${req.user.id} has already published a bootcamp`,400));
+  }
 
   const bootcamp = await Bootcamp.create(req.body);
   res.status(201).json({ success: true, msg: `Successfully created bootcamp`, data: bootcamp });
@@ -134,13 +144,13 @@ exports.bootcampPhotoUpload = asyncHandler(async (req, res, next) => {
   }
   file.name = `photo_${bootcamp._id}${path.parse(file.name).ext}`
 
-  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`,async err =>{
-    if(err){
+  file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async err => {
+    if (err) {
       console.log(err);
-      return next(new ErrorResponse(`${err.message}`,500));
+      return next(new ErrorResponse(`${err.message}`, 500));
     }
 
-    await Bootcamp.findByIdAndUpdate(req.params.id,{photo:file.name},{new:true});
+    await Bootcamp.findByIdAndUpdate(req.params.id, { photo: file.name }, { new: true });
 
   })
 
